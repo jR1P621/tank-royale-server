@@ -1,0 +1,38 @@
+services:
+  tank-royale-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: tank-royale-server
+    ports:
+      - "7654:7654"
+    environment:
+      CONTROLLER_SECRET: controller-secret-change-me
+      BOT_SECRET: bot-secret-change-me
+      PORT: 7654
+    restart: unless-stopped
+
+  sample-bots:
+    build:
+      context: ./bots
+      dockerfile: Dockerfile
+    container_name: sample-bots
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+      BOTS: Crazy,Corners,Fire,MyFirstBot,PaintingBot,RamFire,SpinBot,Target,TrackFire,VelocityBot,Walls
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
+
+  example-bot:
+    build:
+      context: ./example-bot
+      dockerfile: Dockerfile
+    container_name: example-bot
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped

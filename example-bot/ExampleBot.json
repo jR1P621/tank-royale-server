@@ -1,0 +1,14 @@
+{
+  "name": "ExampleBot",
+  "version": "1.0",
+  "authors": [
+    "Me"
+  ],
+  "description": "A simple example bot.",
+  "homepage": "",
+  "countryCodes": [
+    "us"
+  ],
+  "platform": ".NET 10.0",
+  "programmingLang": "C# 14.0"
+}
