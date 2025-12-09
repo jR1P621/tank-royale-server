@@ -1,0 +1,14 @@
+{
+  "name": "PathBot",
+  "version": "1.0",
+  "authors": [
+    "Jason"
+  ],
+  "description": "Drives an endless square loop in the center of the arena.",
+  "homepage": "",
+  "countryCodes": [
+    "us"
+  ],
+  "platform": ".NET 10.0",
+  "programmingLang": "C# 14.0"
+}

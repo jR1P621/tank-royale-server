@@ -60,3 +60,15 @@ services:
     depends_on:
       - tank-royale-server
     restart: unless-stopped
+
+  path-bot:
+    build:
+      context: ./path-bot
+      dockerfile: Dockerfile
+    container_name: path-bot
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
