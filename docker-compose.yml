@@ -36,3 +36,15 @@ services:
     depends_on:
       - tank-royale-server
     restart: unless-stopped
+
+  chat-bot:
+    build:
+      context: ./chat-bot
+      dockerfile: Dockerfile
+    container_name: chat-bot
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped

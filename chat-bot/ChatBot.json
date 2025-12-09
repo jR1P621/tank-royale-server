@@ -1,0 +1,14 @@
+{
+  "name": "ChatBot",
+  "version": "1.0",
+  "authors": [
+    "Jason"
+  ],
+  "description": "A bot lazily created by LLM prompting. NO TOUCHING!",
+  "homepage": "",
+  "countryCodes": [
+    "us"
+  ],
+  "platform": ".NET 10.0",
+  "programmingLang": "C# 14.0"
+}
