@@ -48,3 +48,15 @@ services:
     depends_on:
       - tank-royale-server
     restart: unless-stopped
+
+  breakout-bot:
+    build:
+      context: ./breakout-bot
+      dockerfile: Dockerfile
+    container_name: breakout-bot
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped

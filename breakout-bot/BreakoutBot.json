@@ -1,0 +1,14 @@
+{
+  "name": "BreakoutBot",
+  "version": "1.0",
+  "authors": [
+    "Jason"
+  ],
+  "description": "Simple bounce bot: drives diagonally and deflects off walls by 90 degrees without shooting.",
+  "homepage": "",
+  "countryCodes": [
+    "us"
+  ],
+  "platform": ".NET 10.0",
+  "programmingLang": "C# 14.0"
+}
