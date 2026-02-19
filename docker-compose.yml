@@ -72,3 +72,63 @@ services:
     depends_on:
       - tank-royale-server
     restart: unless-stopped
+  neural-bot-001:
+    build:
+      context: ./generation-1/bot-001
+      dockerfile: Dockerfile
+    container_name: neural-bot-001
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
+
+  neural-bot-002:
+    build:
+      context: ./generation-1/bot-002
+      dockerfile: Dockerfile
+    container_name: neural-bot-002
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
+
+  neural-bot-003:
+    build:
+      context: ./generation-1/bot-003
+      dockerfile: Dockerfile
+    container_name: neural-bot-003
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
+
+  neural-bot-004:
+    build:
+      context: ./generation-1/bot-004
+      dockerfile: Dockerfile
+    container_name: neural-bot-004
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
+
+  neural-bot-005:
+    build:
+      context: ./generation-1/bot-005
+      dockerfile: Dockerfile
+    container_name: neural-bot-005
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: bot-secret-change-me
+    depends_on:
+      - tank-royale-server
+    restart: unless-stopped
+

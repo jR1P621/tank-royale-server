@@ -1,0 +1,14 @@
+{
+  "name": "NeuralBot",
+  "version": "1.0",
+  "authors": [
+    "AI Assistant"
+  ],
+  "description": "A neural network controlled bot.",
+  "homepage": "",
+  "countryCodes": [
+    "us"
+  ],
+  "platform": ".NET 10.0",
+  "programmingLang": "C# 14.0"
+}
