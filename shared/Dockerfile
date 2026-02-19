@@ -4,7 +4,7 @@ WORKDIR /app
 COPY NeuralBot.csproj .
 COPY NeuralBot.cs .
 COPY NeuralBot.json .
-COPY colors.json .
+COPY config.json .
 COPY model.onnx .
 
 RUN dotnet restore

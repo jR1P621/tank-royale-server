@@ -37,9 +37,11 @@ def run_simulation(bot_ids, generation_dir):
         f.write(content)
     
     # Run docker compose
-    subprocess.run(['docker', 'compose', 'up', '--build', '-d'] + [f'neural-bot-{bid:03d}' for bid in bot_ids] + ['tank-royale-server'], cwd='..')
+    CONTAINER_RUNTIME = os.getenv('CONTAINER_RUNTIME', 'docker')
+
+    subprocess.run([CONTAINER_RUNTIME, 'compose', 'up', '--build', '-d'] + [f'neural-bot-{bid:03d}' for bid in bot_ids] + ['tank-royale-server'], cwd='..')
     time.sleep(60)  # Wait for games
-    result = subprocess.run(['docker', 'compose', 'logs'], capture_output=True, text=True, cwd='..')
+    result = subprocess.run([CONTAINER_RUNTIME, 'compose', 'logs'], capture_output=True, text=True, cwd='..')
     logs = result.stdout
     
     # Parse scores, assume format "Bot NeuralBot-001 scored 50"
@@ -52,7 +54,7 @@ def run_simulation(bot_ids, generation_dir):
             scores[bid] = score
     
     # Stop
-    subprocess.run(['docker', 'compose', 'down'], cwd='..')
+    subprocess.run([CONTAINER_RUNTIME, 'compose', 'down'], cwd='..')
     
     return scores
 

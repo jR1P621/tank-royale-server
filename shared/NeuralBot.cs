@@ -20,7 +20,7 @@ public class BulletInfo
 public class NeuralBot : Bot
 {
     private InferenceSession session;
-    private List<BulletInfo> activeBullets = new();
+    private Dictionary<int, BulletInfo> activeBullets = new();
     private float[] lastEnemyData = new float[5]; // x, y, dir, energy, distance
 
     public NeuralBot()
@@ -31,14 +31,25 @@ public class NeuralBot : Bot
 
     public override void Run()
     {
-        // Load colors
-        var colorsJson = File.ReadAllText("colors.json");
-        var colors = JsonSerializer.Deserialize<Dictionary<string, int[]>>(colorsJson);
+        // Load configuration
+        var configJson = File.ReadAllText("config.json");
+        var config = JsonSerializer.Deserialize<Dictionary<string, object>>(configJson);
+        var inputTensorInfo = JsonSerializer.Deserialize<Dictionary<string, bool>>(config["inputTensorInfo"].ToString());
+
+        // Extract colors
+        var colors = JsonSerializer.Deserialize<Dictionary<string, int[]>>(config["colors"].ToString());
         BodyColor = Color.FromRgb(colors["bodyColor"][0], colors["bodyColor"][1], colors["bodyColor"][2]);
         TurretColor = Color.FromRgb(colors["turretColor"][0], colors["turretColor"][1], colors["turretColor"][2]);
         RadarColor = Color.FromRgb(colors["radarColor"][0], colors["radarColor"][1], colors["radarColor"][2]);
         BulletColor = Color.FromRgb(colors["bulletColor"][0], colors["bulletColor"][1], colors["bulletColor"][2]);
-        ScanColor = Color.FromRgb(colors["scanColor"][0], colors["scanColor"][1], colors["scanColor"][2]);
+
+        // Skip irrelevant steps based on input information
+        var inputInfo = JsonSerializer.Deserialize<Dictionary<string, object>>(config["inputInfo"].ToString());
+        if (inputInfo["inputType"].ToString() != "neural-network")
+        {
+            Console.WriteLine("Skipping neural network-specific steps.");
+            return;
+        }
 
         while (IsRunning)
         {
@@ -69,35 +80,48 @@ public class NeuralBot : Bot
         float normRadarDir = (float)RadarDirection / 360f;
         float normArenaW = 1f;
         float normArenaH = 1f;
-        float normEnemyX = lastEnemyData[0] / ArenaWidth;
-        float normEnemyY = lastEnemyData[1] / ArenaHeight;
-        float normEnemyDir = lastEnemyData[2] / 360f;
-        float normEnemyEnergy = lastEnemyData[3] / 100f;
-        float normDistance = lastEnemyData[4] / Math.Max(ArenaWidth, ArenaHeight);
 
-        var state = new List<float> { normX, normY, normDir, normEnergy, normGunHeat, normGunDir, normRadarDir, normArenaW, normArenaH, normEnemyX, normEnemyY, normEnemyDir, normEnemyEnergy, normDistance };
+        var state = new List<float> { normX, normY, normDir, normEnergy, normGunHeat, normGunDir, normRadarDir, normArenaW, normArenaH };
 
-        // Add up to 5 closest bullets
-        var enemyBullets = activeBullets.Where(b => b.IsEnemy).ToList();
-        var sortedBullets = enemyBullets.OrderBy(b => DistanceTo(b.X, b.Y)).Take(5);
-        foreach (var bullet in sortedBullets)
+        if (inputTensorInfo["includeEnemy"])
         {
-            float relAngle = (float)((Math.Atan2(bullet.Y - Y, bullet.X - X) * 180 / Math.PI - Direction + 360) % 360) / 360f;
-            float dist = (float)DistanceTo(bullet.X, bullet.Y) / Math.Max(ArenaWidth, ArenaHeight);
-            float isEnemy = bullet.IsEnemy ? 1f : 0f;
-            state.Add(relAngle);
-            state.Add(dist);
-            state.Add(isEnemy);
+            float normEnemyX = lastEnemyData[0] / ArenaWidth;
+            float normEnemyY = lastEnemyData[1] / ArenaHeight;
+            float normEnemyDir = lastEnemyData[2] / 360f;
+            float normEnemyEnergy = lastEnemyData[3] / 100f;
+            float normDistance = lastEnemyData[4] / Math.Max(ArenaWidth, ArenaHeight);
+
+            state.AddRange(new[] { normEnemyX, normEnemyY, normEnemyDir, normEnemyEnergy, normDistance });
         }
-        // Pad to 5 bullets
-        while (state.Count < 12 + 15) state.Add(0f);
+
+        if (inputTensorInfo["includeBullets"])
+        {
+            var sortedBullets = activeBullets.Where(b => b.Value.IsEnemy).Select(b => new {
+                b,
+                dist = DistanceTo(b.Value.X, b.Value.Y)
+            }).OrderBy(b => b.dist).Take(5).ToArray();
+            foreach (var b in sortedBullets)
+            {
+                var bullet = b.b;
+                float relAngle = (float)((Math.Atan2(bullet.Y - Y, bullet.X - X) * 180 / Math.PI - Direction + 360) % 360) / 360f;
+                float dist = (float)b.dist / Math.Max(ArenaWidth, ArenaHeight);
+                float isEnemy = 1f;
+                state.AddRange(new[] { relAngle, dist, isEnemy });
+            }
+            // Pad to 5 bullets
+            const int targetCount = 27;
+            for (int i = state.Count; i < targetCount; i++)
+                state.Add(0f);
+        }
 
         return state.ToArray();
     }
 
     private float[] InferActions(float[] state)
     {
-        var inputTensor = new DenseTensor<float>(state, new int[] { 1, 12 });
+        // Dynamically determine input tensor size based on state length
+        int inputSize = state.Length;
+        var inputTensor = new DenseTensor<float>(state, new int[] { 1, inputSize });
         var inputs = new List<NamedOnnxValue> { NamedOnnxValue.CreateFromTensor("input", inputTensor) };
         using var results = session.Run(inputs);
         var outputTensor = results.First().AsTensor<float>();
@@ -132,7 +156,7 @@ public class NeuralBot : Bot
 
     public override void OnBulletFired(BulletFiredEvent evt)
     {
-        activeBullets.Add(new BulletInfo
+        activeBullets[evt.Bullet.Id] = new BulletInfo
         {
             X = evt.Bullet.X,
             Y = evt.Bullet.Y,
@@ -140,18 +164,18 @@ public class NeuralBot : Bot
             Power = evt.Bullet.Power,
             IsEnemy = evt.Bullet.OwnerId != Id,
             Tick = Time
-        });
+        };
     }
 
     public override void OnBulletHit(BulletHitEvent evt)
     {
-        activeBullets.RemoveAll(b => b.X == evt.Bullet.X && b.Y == evt.Bullet.Y);
+        activeBullets.Remove(evt.Bullet.Id);
     }
 
     public override void OnBulletHitBullet(BulletHitBulletEvent evt)
     {
-        activeBullets.RemoveAll(b => b.X == evt.Bullet.X && b.Y == evt.Bullet.Y);
-        activeBullets.RemoveAll(b => b.X == evt.HitBullet.X && b.Y == evt.HitBullet.Y);
+        activeBullets.Remove(evt.Bullet.Id);
+        activeBullets.Remove(evt.HitBullet.Id);
     }
 
     public override void OnHitByBullet(HitByBulletEvent evt)
