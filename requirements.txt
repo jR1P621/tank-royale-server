@@ -1,0 +1,4 @@
+onnx
+numpy
+robocode-tank-royale
+onnxruntime

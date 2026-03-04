@@ -4,4 +4,4 @@ WORKDIR /app
 COPY PathBot.cs .
 COPY PathBot.json .
 
-ENTRYPOINT ["dotnet", "run", "PathBot.cs"]
+ENTRYPOINT ["sh", "-c", "SERVER_URL=\"$SERVER_URL\" SERVER_SECRET=\"$SERVER_SECRET\" dotnet run PathBot.cs"]

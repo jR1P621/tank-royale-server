@@ -12,10 +12,10 @@ RUN curl -L -o sample-bots.zip ${BOTS_URL} && \
     rm sample-bots.zip
 
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 ENV SERVER_URL=ws://tank-royale-server:7654
-ENV SERVER_SECRET=
+ENV SERVER_SECRET=j1etPtYUMVuCWGUlW6hF6AV
 ENV BOTS=Crazy
 
 ENTRYPOINT ["/app/entrypoint.sh"]

@@ -9,6 +9,6 @@
   "countryCodes": [
     "us"
   ],
-  "platform": ".NET 10.0",
-  "programmingLang": "C# 14.0"
+  "platform": "Python 3.11",
+  "programmingLang": "Python"
 }

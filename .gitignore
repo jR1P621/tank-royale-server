@@ -1,1 +1,7 @@
 docker-compose.override.yml
+
+/generations/*
+
+/logs/*
+
+__pycache__/

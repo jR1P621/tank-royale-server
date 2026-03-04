@@ -21,10 +21,10 @@ def generate_batch(generation_dir, num_bots=100):
         os.makedirs(bot_dir, exist_ok=True)
 
         # Copy all shared source files into the bot directory
-        shutil.copy('../shared/Dockerfile', bot_dir)
-        shutil.copy('../shared/NeuralBot.cs', bot_dir)
-        shutil.copy('../shared/NeuralBot.csproj', bot_dir)
-        shutil.copy('../shared/NeuralBot.json', bot_dir)
+        shutil.copy("./shared/Dockerfile", bot_dir)
+        shutil.copy("./shared/NeuralBot.py", bot_dir)
+        shutil.copy("./shared/NeuralBot.json", bot_dir)
+        shutil.copy("./shared/requirements.txt", bot_dir)
 
         # Ensure config.json is generated and placed in the bot directory
         config_path = os.path.join(bot_dir, 'config.json')
@@ -37,9 +37,9 @@ def generate_batch(generation_dir, num_bots=100):
         # Define model-specific input tensor info based on model_type
         if model_type in [1, 2, 3]:
             input_tensor_info = {
-                "includeBullets": False,  # Models 1-3 have input_size 12, no bullet data
+                "includeBullets": False,  # Models 1-3 have input_size 14, no bullet data
                 "includeEnemy": True,
-                "includeRadar": False
+                "includeRadar": False,
             }
         else:  # model_type 4-10
             input_tensor_info = {
@@ -54,7 +54,8 @@ def generate_batch(generation_dir, num_bots=100):
         # Combine into config.json
         config = {
             "colors": colors,
-            "inputTensorInfo": input_tensor_info
+            "inputTensorInfo": input_tensor_info,
+            "inputInfo": {"inputType": "neural-network"},
         }
 
         with open(config_path, 'w') as f:
@@ -70,4 +71,4 @@ def generate_batch(generation_dir, num_bots=100):
             json.dump(data, f, indent=2)
 
 if __name__ == "__main__":
-    generate_batch('../generation-1', 100)
+    generate_batch("./generations/generation-1", 100)

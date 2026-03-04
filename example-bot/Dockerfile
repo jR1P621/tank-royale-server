@@ -4,4 +4,4 @@ WORKDIR /app
 COPY ExampleBot.cs .
 COPY ExampleBot.json .
 
-ENTRYPOINT ["dotnet", "run", "ExampleBot.cs"]
+ENTRYPOINT ["sh", "-c", "SERVER_URL=\"$SERVER_URL\" SERVER_SECRET=\"$SERVER_SECRET\" dotnet run ExampleBot.cs"]

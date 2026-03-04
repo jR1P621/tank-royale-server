@@ -4,4 +4,4 @@ WORKDIR /app
 COPY ChatBot.cs .
 COPY ChatBot.json .
 
-ENTRYPOINT ["dotnet", "run", "ChatBot.cs"]
+ENTRYPOINT ["sh", "-c", "SERVER_URL=\"$SERVER_URL\" SERVER_SECRET=\"$SERVER_SECRET\" dotnet run ChatBot.cs"]

@@ -7,8 +7,8 @@ services:
     ports:
       - "7654:7654"
     environment:
-      CONTROLLER_SECRET: controller-secret-change-me
-      BOT_SECRET: bot-secret-change-me
+      CONTROLLER_SECRET: 7Tr04oRlwlnC84ksjhhzESQ
+      BOT_SECRET: j1etPtYUMVuCWGUlW6hF6AV
       PORT: 7654
     restart: unless-stopped
 
@@ -19,10 +19,11 @@ services:
     container_name: sample-bots
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
       BOTS: Crazy,Corners,Fire,MyFirstBot,PaintingBot,RamFire,SpinBot,Target,TrackFire,VelocityBot,Walls
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
 
   example-bot:
@@ -32,9 +33,10 @@ services:
     container_name: example-bot
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
 
   chat-bot:
@@ -44,9 +46,10 @@ services:
     container_name: chat-bot
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
 
   breakout-bot:
@@ -56,9 +59,10 @@ services:
     container_name: breakout-bot
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
 
   path-bot:
@@ -68,67 +72,287 @@ services:
     container_name: path-bot
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
-  neural-bot-001:
+  battle-controller:
     build:
-      context: ./generation-1/bot-001
+      context: ./controller
       dockerfile: Dockerfile
-    container_name: neural-bot-001
+    container_name: battle-controller
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      CONTROLLER_SECRET: 7Tr04oRlwlnC84ksjhhzESQ
+      MIN_BOTS: 30
+      MAX_BOTS: 30
+      NUM_ROUNDS: 2
+      EXPECTED_NEURAL_BOTS: 20
+      REQUIRED_NON_NEURAL_BOTS: 10
+      NEURAL_HOST_PREFIX: neural-bot-
+      POST_BATTLE_COOL_DOWN: 10
+      PRE_START_QUIET_PERIOD: 1.5
     depends_on:
       - tank-royale-server
     restart: unless-stopped
-
-  neural-bot-002:
+  neural-bot-021:
     build:
-      context: ./generation-1/bot-002
+      context: ./generations/generation-10/bot-021
       dockerfile: Dockerfile
-    container_name: neural-bot-002
+    container_name: neural-bot-021
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
-
-  neural-bot-003:
+    
+  neural-bot-022:
     build:
-      context: ./generation-1/bot-003
+      context: ./generations/generation-10/bot-022
       dockerfile: Dockerfile
-    container_name: neural-bot-003
+    container_name: neural-bot-022
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
-
-  neural-bot-004:
+    
+  neural-bot-023:
     build:
-      context: ./generation-1/bot-004
+      context: ./generations/generation-10/bot-023
       dockerfile: Dockerfile
-    container_name: neural-bot-004
+    container_name: neural-bot-023
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
-
-  neural-bot-005:
+    
+  neural-bot-024:
     build:
-      context: ./generation-1/bot-005
+      context: ./generations/generation-10/bot-024
       dockerfile: Dockerfile
-    container_name: neural-bot-005
+    container_name: neural-bot-024
     environment:
       SERVER_URL: ws://tank-royale-server:7654
-      SERVER_SECRET: bot-secret-change-me
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
     depends_on:
       - tank-royale-server
+      - battle-controller
     restart: unless-stopped
-
+    
+  neural-bot-025:
+    build:
+      context: ./generations/generation-10/bot-025
+      dockerfile: Dockerfile
+    container_name: neural-bot-025
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-026:
+    build:
+      context: ./generations/generation-10/bot-026
+      dockerfile: Dockerfile
+    container_name: neural-bot-026
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-027:
+    build:
+      context: ./generations/generation-10/bot-027
+      dockerfile: Dockerfile
+    container_name: neural-bot-027
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-028:
+    build:
+      context: ./generations/generation-10/bot-028
+      dockerfile: Dockerfile
+    container_name: neural-bot-028
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-029:
+    build:
+      context: ./generations/generation-10/bot-029
+      dockerfile: Dockerfile
+    container_name: neural-bot-029
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-030:
+    build:
+      context: ./generations/generation-10/bot-030
+      dockerfile: Dockerfile
+    container_name: neural-bot-030
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-031:
+    build:
+      context: ./generations/generation-10/bot-031
+      dockerfile: Dockerfile
+    container_name: neural-bot-031
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-032:
+    build:
+      context: ./generations/generation-10/bot-032
+      dockerfile: Dockerfile
+    container_name: neural-bot-032
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-033:
+    build:
+      context: ./generations/generation-10/bot-033
+      dockerfile: Dockerfile
+    container_name: neural-bot-033
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-034:
+    build:
+      context: ./generations/generation-10/bot-034
+      dockerfile: Dockerfile
+    container_name: neural-bot-034
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-035:
+    build:
+      context: ./generations/generation-10/bot-035
+      dockerfile: Dockerfile
+    container_name: neural-bot-035
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-036:
+    build:
+      context: ./generations/generation-10/bot-036
+      dockerfile: Dockerfile
+    container_name: neural-bot-036
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-037:
+    build:
+      context: ./generations/generation-10/bot-037
+      dockerfile: Dockerfile
+    container_name: neural-bot-037
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-038:
+    build:
+      context: ./generations/generation-10/bot-038
+      dockerfile: Dockerfile
+    container_name: neural-bot-038
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-039:
+    build:
+      context: ./generations/generation-10/bot-039
+      dockerfile: Dockerfile
+    container_name: neural-bot-039
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    
+  neural-bot-040:
+    build:
+      context: ./generations/generation-10/bot-040
+      dockerfile: Dockerfile
+    container_name: neural-bot-040
+    environment:
+      SERVER_URL: ws://tank-royale-server:7654
+      SERVER_SECRET: j1etPtYUMVuCWGUlW6hF6AV
+    depends_on:
+      - tank-royale-server
+      - battle-controller
+    restart: unless-stopped
+    

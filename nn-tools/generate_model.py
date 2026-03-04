@@ -3,8 +3,8 @@ from onnx import helper, TensorProto
 import numpy as np
 
 def create_random_nn_onnx(model_type=1, filename="model.onnx"):
-    # Model types: 1-3: basic (12 in), 4-10: bullet (27 in)
-    input_size = 12 if model_type <= 3 else 27
+    # Model types: 1-3: basic (15 in), 4-10: bullet (28 in)
+    input_size = 15 if model_type <= 3 else 28
     if model_type == 1:
         hidden_size = 32
     elif model_type in [2,4]:

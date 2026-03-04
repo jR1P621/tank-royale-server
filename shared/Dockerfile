@@ -1,13 +1,15 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+FROM python:3.11-slim
 WORKDIR /app
 
-COPY NeuralBot.csproj .
-COPY NeuralBot.cs .
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY NeuralBot.py .
 COPY NeuralBot.json .
 COPY config.json .
 COPY model.onnx .
 
-RUN dotnet restore
-RUN dotnet build -c Release
-
-ENTRYPOINT ["dotnet", "run", "--project", "NeuralBot.csproj"]
+ENV PYTHONUNBUFFERED=1
+ENTRYPOINT ["python", "-u", "NeuralBot.py"]
